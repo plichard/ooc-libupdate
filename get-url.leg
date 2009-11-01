@@ -1,0 +1,29 @@
+
+%{
+#include <stdio.h>
+int yyparse();
+%}
+
+mainrule = url
+	| libname
+	| (<.>) 
+
+libname = < [a-zA-Z0-9]([a-zA-Z0-9])* > COLON {printf("found a lib: %s\n",yytext);}
+
+url = git < [a-zA-Z0-9]([a-zA-Z0-9])* (SCHARS)* > EOL {printf("found an url: %s\n",yytext);}
+
+git = "git://"
+
+EOL	= '\n' | '\r\n' | '\r' | ';'
+
+-	= [ \t]*
+
+SCHARS = '/' | '.' | '-' | '_'
+
+COLON = ':'
+
+%%
+int main() {
+	while(yyparse()) {}
+	return 0;
+}
